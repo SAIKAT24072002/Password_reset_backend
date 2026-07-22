@@ -139,7 +139,9 @@ const forgotPassword = async (req, res, next) => {
     user.resetPasswordExpires = Date.now() + expiryMinutes * 60 * 1000;
     await user.save();
 
-    const resetLink = `${process.env.CLIENT_URL || 'http://localhost:5173'}/reset-password/${resetToken}`;
+    const origin = req.headers.origin || (req.headers.referer ? new URL(req.headers.referer).origin : null);
+    const clientUrl = origin || process.env.CLIENT_URL || 'http://localhost:5173';
+    const resetLink = `${clientUrl.replace(/\/$/, '')}/reset-password/${resetToken}`;
     console.log(`[PASSWORD RESET LINK]: ${resetLink}`);
 
     try {

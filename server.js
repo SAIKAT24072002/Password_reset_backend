@@ -13,9 +13,22 @@ connectDB();
 const app = express();
 
 
+const allowedOrigins = [
+  "https://thunderous-mermaid-7044bb.netlify.app",
+  "http://localhost:5173",
+  "http://localhost:3000",
+  process.env.CLIENT_URL,
+].filter(Boolean);
+
 app.use(
   cors({
-    origin: "https://thunderous-mermaid-7044bb.netlify.app",
+    origin: (origin, callback) => {
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.includes(origin) || origin.startsWith("http://localhost") || origin.includes("netlify.app")) {
+        return callback(null, true);
+      }
+      return callback(null, true);
+    },
     credentials: true,
   })
 );
